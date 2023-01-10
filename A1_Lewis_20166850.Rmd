@@ -1,0 +1,96 @@
+---
+title: "Assignment 1 Report"
+author: "Isabeau Lewis"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Loading libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+# Loading theme
+```{r}
+source("http://bit.ly/theme_pub")
+theme_set(theme_pub())
+```
+
+
+# Running dataGenerato.R script ??? IS THIS ALL YOU NEED TO DO? I DON'T KNOW IF IT ACTUALLY OUTPUTS
+
+This script creates a simulated data frame with 100 values for four columns: `Organism, Limb_width, Limb_length,` and `Observer` and saves it as a CSV file.
+```{r}
+source("./dataGenerato.R")
+```
+
+# Running volumeEstimato.R script
+
+This script adds an additional `Limb_volume` column calculated from the values for limb width and limb length in the previous script, and saves the file as an updated CSV of the previous one.
+```{r echo = TRUE}
+source("./volumeEstimato.R")
+```
+
+# 1. Loading the revised measurements file
+```{r echo = TRUE}
+measurements <- read.csv("measurements.csv")
+```
+
+# 2. Sorting by column ??? DOES THIS JUST MEAN ARRANGE?
+## a) By species
+```{r}
+arrange(measurements, Organism)
+```
+
+## b) By observer
+```{r}
+arrange(measurements, Observer)
+```
+
+## c) By limb volume
+```{r}
+arrange(measurements, Volume)
+```
+
+# 3. Creating a table showing the average volume for each species
+```{r}
+measurements %>%
+  group_by(Organism) %>%
+  summarise(avg_Volume = mean(Volume))
+```
+
+# 4. Creating a table showing the number of observations for each combination of species and observer
+```{r}
+measurements %>% 
+  group_by(Organism, Observer) %>%
+  summarise(Observations = length(c(Organism, Observer)))
+```
+
+# 5. Creating a box plot to compare key features of the distributions of volumes for each species ??? DOES THIS NEED A FIGURE CAPTION
+```{r}
+ggplot(measurements, aes(x=Organism, y=Volume, colour=Organism)) + 
+  geom_boxplot() +
+  xlab("Species identity") +
+  ylab("Limb volume")
+```
+
+# 6. Creating a multi-panel plot showing frequency histograms for each species ??? IS THIS WHAT THEY MEAN BY FREQUENCY HIST?
+```{r}
+ggplot(measurements, aes(x=Volume, group=Organism, fill=Organism, colour=I("black"))) +
+  geom_histogram() + # Creating frequency histograms for Volume
+  facet_wrap(vars(Organism)) + # Separating frequency histograms by species
+  xlab("Limb volume") +
+  ylab("Count")
+
+```
+
+
+
+
+
+
