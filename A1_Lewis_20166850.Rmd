@@ -91,6 +91,3 @@ ggplot(measurements, aes(x=Volume, group=Organism, fill=Organism, colour=I("blac
 
 
 
-
-
-
