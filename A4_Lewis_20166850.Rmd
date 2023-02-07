@@ -1,0 +1,51 @@
+---
+title: "Assignment 5"
+author: "Isabeau Lewis"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Libraries
+```{r}
+library(dplyr)
+```
+
+# 1. Importing data
+```{r}
+getwd()
+MData<-read.csv("measurements.csv")
+head(MData)
+```
+
+# 2. Adding a new column called ``Sp`` 
+```{r}
+MDataSp <- MData %>%
+  mutate(Sp = sub("(\\w)\\w+", "\\1.", MData$Organism))
+head(MDataSp)
+```
+
+# 3. Creating a new dataset with the ``Sp`` column instead of the ``Organism`` one
+```{r}
+MDataNew <- MData %>%
+  select(-c("Organism")) %>%
+  relocate(Sp, .before="Limb_width")
+head(MDataNew)
+```
+
+# 4. Saving the new dataset
+```{r}
+write.csv(MDataNew, "MeasShort.csv")
+```
+
+
+
+
+
+
+
+
+
